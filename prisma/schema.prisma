@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Tour {
+  id            Int      @id @default(autoincrement())
+  name          String
+  description   String
+  maxPeople     Int
+  urlImage      String
+  countryId     Int
+  cityId        Int
+  initialDate   DateTime
+  finalDate     DateTime
+  avarageRating Float
+  duration      Int
+  overview      String
+  typeId        Int
+  minAge        Int
+
+  Reviews Review[]
+  Type    Types    @relation(fields: [typeId], references: [id])
+  City    City     @relation(fields: [cityId], references: [id])
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  services    Float
+  location    Float
+  Amenities   Float
+  Prices      Float
+  Food        Float
+  comfort     Float
+  description String
+  tourId      Int
+  userId      String
+  createdAt   DateTime @default(now())
+
+  tour Tour @relation(fields: [tourId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Types {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  Tour Tour[]
+}
+
+model City {
+  id        Int    @id @default(autoincrement())
+  name      String
+  countryId Int
+
+  Tour    Tour[]
+  Country Country @relation(fields: [countryId], references: [id])
+}
+
+model Country {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  City        City[]
+  continentId Int
+
+  Continent Continent @relation(fields: [continentId], references: [id])
+}
+
+model Continent {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  Country Country[]
+}
+
+model User {
+  id    String @id
+  name  String
+  email String @unique
+
+  Review Review[]
+}
