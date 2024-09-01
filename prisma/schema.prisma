@@ -22,6 +22,7 @@ model Tour {
   overview      String
   typeId        Int
   minAge        Int
+  price         Float
 
   Reviews Review[]
   Type    Types    @relation(fields: [typeId], references: [id])
