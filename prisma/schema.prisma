@@ -22,6 +22,7 @@ model Tour {
   overview      String
   typeId        Int
   minAge        Int
+  price         Float
 
   Reviews Review[]
   Type    Types    @relation(fields: [typeId], references: [id])
@@ -29,16 +30,16 @@ model Tour {
 }
 
 model Review {
-  id          Int      @id @default(autoincrement())
-  services    Float
-  location    Float
-  Amenities   Float
-  Prices      Float
-  Food        Float
-  comfort     Float
+  id         Int      @id @default(autoincrement())
+  services   Int
+  location   Int
+  amenities  Int
+  prices     Int
+  comfort    Int
   description String
-  tourId      Int
-  userId      String
+  tourId     Int
+  userId     String
+  userName    String
   createdAt   DateTime @default(now())
 
   tour Tour @relation(fields: [tourId], references: [id])
