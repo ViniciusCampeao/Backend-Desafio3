@@ -30,16 +30,15 @@ model Tour {
 }
 
 model Review {
-  id          Int      @id @default(autoincrement())
-  services    Float
-  location    Float
-  Amenities   Float
-  Prices      Float
-  Food        Float
-  comfort     Float
+  id         Int      @id @default(autoincrement())
+  services   Int
+  location   Int
+  amenities  Int
+  prices     Int
+  comfort    Int
   description String
-  tourId      Int
-  userId      String
+  tourId     Int
+  userId     String
   createdAt   DateTime @default(now())
 
   tour Tour @relation(fields: [tourId], references: [id])

@@ -7,27 +7,58 @@ const prisma = new PrismaClient();
 
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+}));
 
 
 app.post('/tours', async (req, res) => {
-  const tour = await prisma.tour.create({
-    data: req.body,
-  });
-  res.json(tour);
+  try {
+    const tour = await prisma.tour.create({
+      data: req.body,
+    });
+    res.json(tour);
+  } catch (error) {
+    console.error('Error creating tour:', error);
+    res.status(500).json({ error: 'Error creating tour' });
+  }
 });
+
 
 app.get('/tours', async (req, res) => {
-  const tours = await prisma.tour.findMany();
-  res.json(tours);
+  try {
+    const tours = await prisma.tour.findMany();
+    res.json(tours);
+  } catch (error) {
+    console.error('Error fetching tours:', error);
+    res.status(500).json({ error: 'Error fetching tours' });
+  }
 });
 
+
 app.get('/tours/:id', async (req, res) => {
-  const tour = await prisma.tour.findUnique({
-    where: { id: Number(req.params.id) },
-  });
-  res.json(tour);
+  const id = Number(req.params.id);
+
+  if (isNaN(id)) {
+    return res.status(400).json({ error: 'Invalid ID format' });
+  }
+
+  try {
+    const tour = await prisma.tour.findUnique({
+      where: { id: id },
+    });
+
+    if (tour) {
+      res.json(tour);
+    } else {
+      res.status(404).json({ error: 'Tour not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching tour:', error);
+    res.status(500).json({ error: 'Error fetching tour' });
+  }
 });
+
 
 app.put('/tours/:id', async (req, res) => {
   const tour = await prisma.tour.update({
@@ -89,6 +120,22 @@ app.post('/types', async (req, res) => {
 app.get('/types', async (req, res) => {
   const types = await prisma.types.findMany();
   res.json(types);
+});
+
+app.get('/types-count', async (req, res) => {
+    const types = await prisma.types.findMany({
+      include: {
+        _count: { select: { Tour: true } }
+      }
+    });
+
+    const typesMap = types.map((type) => ({
+      id: type.id,
+      name: type.name,
+      tours: type._count.Tour
+    }));
+
+    res.json(typesMap);
 });
 
 app.get('/types/:id', async (req, res) => {
