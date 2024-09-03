@@ -3,8 +3,22 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.continent.createMany({
-    data: [{ name: "Europe" }, { name: "North America" }, { name: "South America" }],
+    data: [
+      { name: "Europe" }, 
+      { name: "North America" }, 
+      { name: "South America" }
+    ],
   });
+
+  await prisma.user.create({
+    data: {
+      email: "viniciusfernandes643@gmail.com",
+      id: "WRCcT6MnWKW1enpKHMJ9nQQWrHm1",
+      name: "Vinicius Fernandes",
+    }}
+  )
+
+
 
   await prisma.country.createMany({
     data: [
