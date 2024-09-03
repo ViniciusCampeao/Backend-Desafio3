@@ -59,6 +59,29 @@ app.get('/tours/:id', async (req, res) => {
   }
 });
 
+app.get('/tours/:tourId/last-review', async (req, res) => {
+  const { tourId } = req.params;
+
+  try {
+    const lastReview = await prisma.review.findFirst({
+      where: { tourId : Number(tourId) },
+      include: { user: true },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    if (lastReview) {
+      res.json(lastReview);
+    } else {
+      res.status(404).json({ error: 'No reviews found for this tour' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch review' });
+  }
+});
+
+
 
 app.put('/tours/:id', async (req, res) => {
   const tour = await prisma.tour.update({
