@@ -39,6 +39,7 @@ model Review {
   description String
   tourId     Int
   userId     String
+  userName    String
   createdAt   DateTime @default(now())
 
   tour Tour @relation(fields: [tourId], references: [id])
